@@ -27,6 +27,12 @@ module.exports = {
       accounts: [RINKEBY_PRIVATE_KEY]
     }
   },
+  gasReporter: {
+    enabled: false,
+    currency: "USD",
+    outputFile: "gas-report.txt",
+    noColors: true,
+  },
   namedAccounts: {
     deployer: {
       default: 0,
