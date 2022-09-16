@@ -89,5 +89,16 @@ const { developmentChains, networkConfig } = require("../../helper-hardhat-confi
         it("reverts when checkUpkeep is false", async () => {
             await expect(raffle.performUpkeep([])).to.be.revertedWith("Raffle__UpkeepNotNeeded")
         })
+        it("updates the raffle state, emits an event, and calls vrf coordinator", async () => {
+            await raffle.enterRaffle({ value: raffleEntranceFee })
+            await network.provider.send("evm_increaseTime", [interval.toNumber() + 1])
+            await network.provider.send("evm_mine", [])
+            const txResponse = await raffle.performUpkeep([])
+            const txReceipt = await txResponse.wait(1)
+            const requestId = txReceipt.events[1].args.requestId
+            const raffleState = await raffle.getRaffleState()
+            assert(requestId.toNumber() > 0)
+            assert(raffleState.toString() == "1")
+        })
     })
 })
