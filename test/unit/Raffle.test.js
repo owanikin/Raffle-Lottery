@@ -46,6 +46,7 @@ const { developmentChains, networkConfig } = require("../../helper-hardhat-confi
             await expect(raffle.enterRaffle({value: raffleEntranceFee})).to.be.revertedWith("Raffle__NotOpen")
         })
     })
+
     describe("checkUpkeep", function() {
         it("returns false if people haven't sent any ETH", async () => {
             await network.provider.send("evm_increaseTime", [interval.toNumber() + 1])
@@ -78,6 +79,7 @@ const { developmentChains, networkConfig } = require("../../helper-hardhat-confi
             assert(upkeepNeeded)
         })
     })
+
     describe("performUpkeep", function () {
         it("it can only run if checkUpkeep is true", async () => {
             await raffle.enterRaffle({ value: raffleEntranceFee })
@@ -99,6 +101,18 @@ const { developmentChains, networkConfig } = require("../../helper-hardhat-confi
             const raffleState = await raffle.getRaffleState()
             assert(requestId.toNumber() > 0)
             assert(raffleState.toString() == "1")
+        })
+    })
+
+    describe("fulfillRandomWords", function() {
+        beforeEach(async () => {
+            await raffle.enterRaffle({ value: raffleEntranceFee })
+            await network.provider.send("evm_increaseTime", [interval.toNumber() + 1])
+            await network.provider.send("evm_mine", [])
+        })
+        it("can only be called after performUpkeep", async () => {
+            await expect(vrfCoordinatorV2Mock.fulfillRandomWords(0, raffle.address)).to.be.revertedWith("nonexistent request")
+            await expect(vrfCoordinatorV2Mock.fulfillRandomWords(1, raffle.address)).to.be.revertedWith("nonexistent request")
         })
     })
 })
