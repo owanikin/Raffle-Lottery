@@ -63,5 +63,12 @@ const { developmentChains, networkConfig } = require("../../helper-hardhat-confi
             assert.equal(raffleState.toString(), "1")
             assert.equal(upkeepNeeded, false)
         })
+        it("returns false if enough time hasn't passed", async () => {
+            await raffle.enterRaffle({ value: raffleEntranceFee })
+            await network.provider.send("evm_increaseTime", [interval.toNumber() + 1])
+            await network.provider.send("evm_mine", [])
+            const { upkeepNeeded } = await raffle.callStatic.checkUpkeep([])
+            await(!upkeepNeeded)
+        })
     })
 })
