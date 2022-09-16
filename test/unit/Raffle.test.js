@@ -85,6 +85,9 @@ const { developmentChains, networkConfig } = require("../../helper-hardhat-confi
             await network.provider.send("evm_mine", [])
             const tx = await raffle.performUpkeep([])
             assert(tx)
-        } )
+        })
+        it("reverts when checkUpkeep is false", async () => {
+            await expect(raffle.performUpkeep([])).to.be.revertedWith("Raffle__UpkeepNotNeeded")
+        })
     })
 })
