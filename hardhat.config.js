@@ -27,6 +27,11 @@ module.exports = {
       accounts: [RINKEBY_PRIVATE_KEY]
     }
   },
+  etherscan: {
+    apiKey: {
+      rinkeby: ETHERSCAN_API_KEY,
+    }
+  },
   gasReporter: {
     enabled: false,
     currency: "USD",
