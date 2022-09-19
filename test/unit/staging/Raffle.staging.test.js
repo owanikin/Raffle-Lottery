@@ -1,6 +1,6 @@
 const { assert, expect } = require("chai")
 const { network, getNamedAccounts, deployments, ethers } = require("hardhat")
-const { developmentChains, networkConfig } = require("../../helper-hardhat-config")
+const { developmentChains, networkConfig } = require("/Users/test./codes/fc-pc-solidity/hardhat-smartcontract-raffle/helper-hardhat-config.js")
 
 developmentChains.includes(network.name)
     ? describe.skip
@@ -16,9 +16,11 @@ developmentChains.includes(network.name)
           describe("fulfillRandomWords", function () {
               it("works with live Chainlink Keepers and Chainlink VRF, we got a random winner", async function () {
                   // enter the raffle
+                  console.log("Setting up test...");
                   const startingTimeStamp = await raffle.getLatestTimeStamp()
                   const accounts = await ethers.getSigners()
 
+                  console.log("Setting up Listener...");
                   await new Promise(async (resolve, reject) => {
                       // setup listener before we enter the raffle
                       // Just in case the blockchain moves Really fast
@@ -42,14 +44,16 @@ developmentChains.includes(network.name)
                               resolve()
                           } catch (error) {
                               console.log(error)
-                              reject(e)
+                              reject(error)
                           }
                       })
                       //   Then entering the raffle
-                      await raffle.enterRaffle({ value: raffleEntranceFee })
+                      console.log("Entering the Raffle");
+                      const tx = await raffle.enterRaffle({ value: raffleEntranceFee })
+                      await tx.wait(1)
+                      console.log("Ok, time to wait...");
                       const winnerStartingBalance = await accounts[0].getBalance()
                   })
-
                   // and this code Wont complete until our listener has finished listening!
               })
           })
