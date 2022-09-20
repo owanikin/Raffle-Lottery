@@ -6,9 +6,10 @@ require("hardhat-gas-reporter")
 require("hardhat-contract-sizer")
 require("dotenv").config()
 
-const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL
-const RINKEBY_PRIVATE_KEY = process.env.RINKEBY_PRIVATE_KEY
-const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY
+
+const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL
+const GOERLI_PRIVATE_KEY = process.env.GOERLI_PRIVATE_KEY
+// const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY 
 
 /** @type import('hardhat/config').HardhatUserConfig */
@@ -20,16 +21,16 @@ module.exports = {
       chainId: 31337,
       blockConfirmations: 1
     },
-    rinkeby: {
-      chainId: 4,
+    goerli: {
+      chainId: 5,
       blockConfirmations: 6,
-      url: RINKEBY_RPC_URL,
-      accounts: [RINKEBY_PRIVATE_KEY]
+      url: GOERLI_RPC_URL,
+      accounts: [GOERLI_PRIVATE_KEY],
     }
   },
   etherscan: {
     apiKey: {
-      rinkeby: ETHERSCAN_API_KEY,
+      goerli: ETHERSCAN_API_KEY,
     }
   },
   gasReporter: {
